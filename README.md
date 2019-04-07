@@ -1,1 +1,3 @@
-# CameraDemo
+# CameraView
+
+分别使用camera api1、api2和google的CameraView来实现照相机功能
