@@ -5,6 +5,8 @@ import android.hardware.Camera;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.xuexiang.camerademo.util.CameraUtils;
+
 /**
  * 相机预览界面
  *
@@ -28,6 +30,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
+        if (mCamera == null) return;
         try {
             mCamera.setPreviewDisplay(holder);
             mCamera.startPreview();
@@ -41,6 +44,8 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         if (holder.getSurface() == null) {
             return;
         }
+        if (mCamera == null) return;
+
         try {
             mCamera.stopPreview();
         } catch (Exception e) {
@@ -57,7 +62,41 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
+        if (mCamera == null) return;
+
         mCamera.stopPreview();
         mCamera.release();
     }
+
+    public boolean startPreview() {
+        if (mCamera != null) {
+            mCamera.startPreview();
+            return true;
+        }
+        return false;
+    }
+
+    public boolean autoFocus() {
+        if (mCamera != null) {
+            return CameraUtils.autoFocus(mCamera);
+        }
+        return false;
+    }
+
+    public boolean autoFocus(Camera.AutoFocusCallback cb) {
+        if (mCamera != null) {
+            return CameraUtils.autoFocus(mCamera, cb);
+        }
+        return false;
+    }
+
+    public boolean takePicture(Camera.PictureCallback callback) {
+        if (mCamera != null) {
+            mCamera.takePicture(null, null, callback);
+            return true;
+        }
+        return false;
+    }
+
+
 }
