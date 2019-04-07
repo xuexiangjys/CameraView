@@ -51,17 +51,16 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation deps.support.app_compat
     testImplementation deps.junit
     androidTestImplementation deps.runner
     androidTestImplementation deps.espresso.core
-
     //工具类
     implementation 'com.github.xuexiangjys.XUtil:xutil-core:1.1.5'
     //切片
-    implementation 'com.github.xuexiangjys.XAOP:xaop-runtime:1.0.1'  //添加依赖
-
+    implementation 'com.github.xuexiangjys.XAOP:xaop-runtime:1.0.1'
+    //添加依赖
     //XPage
     implementation 'com.github.xuexiangjys.XPage:xpage-lib:2.2.4'
     annotationProcessor 'com.github.xuexiangjys.XPage:xpage-compiler:2.2.4'
@@ -72,4 +71,6 @@ dependencies {
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.3'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
     testImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
+
+    implementation project(':library')
 }
