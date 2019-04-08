@@ -12,10 +12,13 @@
     limitations under the License.
 -->
 <resources>
-    <public name="facing" type="attr"/>
-    <public name="aspectRatio" type="attr"/>
-    <public name="autoFocus" type="attr"/>
-    <public name="flash" type="attr"/>
 
-    <public name="Widget.CameraView" type="style"/>
+    <style name="Widget.CameraView" parent="android:Widget">
+        <item name="android:adjustViewBounds">false</item>
+        <item name="cv_facing">back</item>
+        <item name="cv_aspectRatio">4:3</item>
+        <item name="cv_autoFocus">true</item>
+        <item name="cv_flash">auto</item>
+    </style>
+
 </resources>
