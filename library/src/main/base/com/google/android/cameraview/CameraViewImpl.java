@@ -18,6 +18,9 @@ package com.google.android.cameraview;
 
 import android.view.View;
 
+import com.google.android.cameraview.strategy.ICameraStrategy;
+import com.google.android.cameraview.strategy.impl.DefaultCameraStrategy;
+
 import java.util.Set;
 
 abstract class CameraViewImpl {
@@ -26,13 +29,21 @@ abstract class CameraViewImpl {
 
     protected final PreviewImpl mPreview;
 
+    protected ICameraStrategy mICameraStrategy;
+
     CameraViewImpl(Callback callback, PreviewImpl preview) {
         mCallback = callback;
         mPreview = preview;
+        mICameraStrategy = _CameraView.getICameraStrategy();
     }
 
     View getView() {
         return mPreview.getView();
+    }
+
+    public CameraViewImpl setICameraStrategy(ICameraStrategy iCameraStrategy) {
+        mICameraStrategy = iCameraStrategy;
+        return this;
     }
 
     /**

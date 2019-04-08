@@ -3,6 +3,8 @@ package com.xuexiang.camerademo;
 import android.app.Application;
 import android.content.Context;
 
+import com.google.android.cameraview.CameraView;
+import com.xuexiang.camerademo.strategy.AutoCameraStrategy;
 import com.xuexiang.xaop.XAOP;
 import com.xuexiang.xaop.util.PermissionUtils;
 import com.xuexiang.xpage.AppPageConfig;
@@ -53,5 +55,7 @@ public class MyApp extends Application {
             }
 
         });
+
+        CameraView.setICameraStrategy(new AutoCameraStrategy(1920 * 1080));
     }
 }

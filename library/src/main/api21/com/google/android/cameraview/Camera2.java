@@ -447,8 +447,8 @@ class Camera2 extends CameraViewImpl {
         if (mImageReader != null) {
             mImageReader.close();
         }
-        Size largest = mPictureSizes.sizes(mAspectRatio).last();
-        mImageReader = ImageReader.newInstance(largest.getWidth(), largest.getHeight(),
+        Size pictureSize = mICameraStrategy.chooseOptimalPictureSize(mPictureSizes.sizes(mAspectRatio));
+        mImageReader = ImageReader.newInstance(pictureSize.getWidth(), pictureSize.getHeight(),
                 ImageFormat.JPEG, /* maxImages */ 2);
         mImageReader.setOnImageAvailableListener(mOnImageAvailableListener, null);
     }
