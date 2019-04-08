@@ -5,6 +5,10 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.hardware.Camera;
 
+import com.xuexiang.xutil.app.PathUtils;
+import com.xuexiang.xutil.data.DateUtils;
+import com.xuexiang.xutil.file.FileIOUtils;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -124,6 +128,19 @@ public final class CameraUtils {
         }else if(orientation == Configuration.ORIENTATION_PORTRAIT) {
             camera.setDisplayOrientation(90);
         }
+    }
+
+    public static final String JPEG = ".jpeg";
+
+    /**
+     * 处理拍照的回调
+     * @param data
+     * @return
+     */
+    public static String handleOnPictureTaken(byte[] data, String fileSuffix) {
+        String picPath = PathUtils.getAppExtCachePath() + "/images/" + DateUtils.getNowMills() + fileSuffix;
+        boolean result = FileIOUtils.writeFileFromBytesByStream(picPath, data);
+        return result ? picPath : "";
     }
 
 }

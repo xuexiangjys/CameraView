@@ -5,6 +5,7 @@ import android.view.KeyEvent;
 import android.view.View;
 
 import com.xuexiang.camerademo.activity.CameraActivity;
+import com.xuexiang.camerademo.activity.CameraViewActivity;
 import com.xuexiang.xaop.annotation.Permission;
 import com.xuexiang.xpage.annotation.Page;
 import com.xuexiang.xpage.base.XPageContainerListFragment;
@@ -40,6 +41,7 @@ public class MainFragment extends XPageSimpleListFragment {
     protected List<String> initSimpleData(List<String> lists) {
         lists.add("Camera1 自定义照相机");
         lists.add("Camera2 自定义照相机");
+        lists.add("Google CameraView 自定义照相机");
         return lists;
     }
 
@@ -57,6 +59,9 @@ public class MainFragment extends XPageSimpleListFragment {
                 break;
             case 1:
 
+                break;
+            case 2:
+                startActivityForResult(new Intent(getContext(), CameraViewActivity.class), REQUEST_CODE_CUSTOM_CAMERA);
                 break;
             default:
                 break;

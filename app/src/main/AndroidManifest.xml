@@ -30,9 +30,8 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".activity.CameraActivity"
-            android:theme="@style/FullscreenTheme" />
+        <activity android:name=".activity.CameraActivity" />
+        <activity android:name=".activity.CameraViewActivity" />
 
     </application>
 

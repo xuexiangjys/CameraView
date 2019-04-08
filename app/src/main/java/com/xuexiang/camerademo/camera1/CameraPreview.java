@@ -98,5 +98,16 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         return false;
     }
 
+    private String getFocusMode() {
+        if (mCamera != null) {
+            return mCamera.getParameters().getFocusMode();
+        }
+        return "";
+    }
+
+    public boolean isAutoFocusMode() {
+        return getFocusMode().contains(Camera.Parameters.FOCUS_MODE_AUTO);
+    }
+
 
 }

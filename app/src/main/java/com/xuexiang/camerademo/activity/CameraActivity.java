@@ -11,15 +11,16 @@ import android.widget.FrameLayout;
 import com.xuexiang.camerademo.R;
 import com.xuexiang.camerademo.camera1.CameraManager;
 import com.xuexiang.camerademo.camera1.CameraPreview;
+import com.xuexiang.camerademo.util.CameraUtils;
 import com.xuexiang.xaop.annotation.SingleClick;
-import com.xuexiang.xutil.app.PathUtils;
-import com.xuexiang.xutil.data.DateUtils;
-import com.xuexiang.xutil.file.FileIOUtils;
+import com.xuexiang.xutil.common.StringUtils;
 import com.xuexiang.xutil.tip.ToastUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.xuexiang.camerademo.util.CameraUtils.JPEG;
 
 /**
  * @author xuexiang
@@ -61,14 +62,16 @@ public class CameraActivity extends AppCompatActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_camera_button:
-                if (isFocus){
+                if (isFocus) {
                     mCameraPreview.takePicture(mPictureCallback);
                 } else {
                     mCameraPreview.autoFocus(mAutoFocusCallback);
                 }
                 break;
             case R.id.fl_container:
-                mCameraPreview.autoFocus();
+                if (mCameraPreview.isAutoFocusMode()) {
+                    mCameraPreview.autoFocus();
+                }
                 break;
             default:
                 break;
@@ -99,14 +102,15 @@ public class CameraActivity extends AppCompatActivity {
     private Camera.PictureCallback mPictureCallback = new Camera.PictureCallback() {
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
-            String picPath = PathUtils.getAppExtCachePath() + "/images/" + DateUtils.getNowMills() + ".jpeg";
-            boolean result = FileIOUtils.writeFileFromBytesByStream(picPath, data);
-            if (result) {
+            String picPath = CameraUtils.handleOnPictureTaken(data, JPEG);
+            if (!StringUtils.isEmpty(picPath)) {
                 setResult(RESULT_OK, new Intent().putExtra(KEY_IMG_PATH, picPath));
                 finish();
             } else {
-                mCameraPreview.startPreview();
+                ToastUtils.toast("图片保存失败！");
             }
         }
     };
+
+
 }
