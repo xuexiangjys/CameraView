@@ -38,16 +38,14 @@ public final class CameraUtils {
     /**
      * 从sizeArray中找到满足16:9比例，且不超过maxPicturePixels指定的像素数的最大Size.
      * 若找不到，则选择满足16:9比例的最大Size（像素数可能超过maxPicturePixels)，若仍找不到，返回最大Size。
-     *  @param forTakingPicture 寻找拍照尺寸，而不是预览尺寸。
-     *                         为true时，尺寸受到maxPicturePixels的限制；
-     *                         false时，尺寸不超过1920x1080，否则相机带宽吃紧，这也是Camera2 API的要求.
+     *
      * @param sizeList         Camera.Parameters.getSupportedPreviewSizes()
      *                         或Camera.Parameters.getSupportedPictureSizes()返回的sizeList
      * @param maxPicturePixels 最大可接受的照片像素数
      */
-    public static Camera.Size findBestSize(boolean forTakingPicture, List<Camera.Size> sizeList, long maxPicturePixels) {
+    public static Camera.Size findBestSize(List<Camera.Size> sizeList, long maxPicturePixels) {
         //满足16:9，但超过maxAcceptedPixels的过大Size
-        List<Camera.Size> tooLargeSizes = new ArrayList<>();
+        List<Camera.Size> largeSizes = new ArrayList<>();
         //按面积由大到小排序
         Collections.sort(sizeList, new Comparator<Camera.Size>() {
             @Override
@@ -55,24 +53,17 @@ public final class CameraUtils {
                 return -Integer.compare(o1.width * o1.height, o2.width * o2.height);
             }
         });
-        for (Camera.Size size: sizeList) {
+        for (Camera.Size size : sizeList) {
             //非16:9的尺寸无视
             if (isWide(size)) {
-                boolean notTooLarge;
-                if (forTakingPicture) {
-                    //若是为了拍摄照片，则尺寸不要超过指定的maxPicturePixels.
-                    notTooLarge = ((long) size.width) * ((long) size.height) <= maxPicturePixels;
-                } else {
-                    //若只是为了预览，则尺寸不要超过1920x1080，否则相机带宽吃紧，这也是Camera2 API的要求.
-                    notTooLarge = ((long) size.width) * ((long) size.height) <= 1920 * 1080;
-                }
-                if (!notTooLarge) {
-                    tooLargeSizes.add(size);
+                //尺寸不要超过指定的maxPicturePixels.
+                if (((long) size.width) * ((long) size.height) >= maxPicturePixels) {
+                    largeSizes.add(size);
                 }
             }
         }
-        if (tooLargeSizes.size() > 0) {
-            return tooLargeSizes.get(0);
+        if (largeSizes.size() > 0) {
+            return largeSizes.get(largeSizes.size() - 1);
         } else {
             return sizeList.get(0);
         }
@@ -121,11 +112,11 @@ public final class CameraUtils {
     }
 
 
-    public static void followScreenOrientation(Context context, Camera camera){
+    public static void followScreenOrientation(Context context, Camera camera) {
         final int orientation = context.getResources().getConfiguration().orientation;
-        if(orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             camera.setDisplayOrientation(0);
-        }else if(orientation == Configuration.ORIENTATION_PORTRAIT) {
+        } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
             camera.setDisplayOrientation(90);
         }
     }
@@ -134,6 +125,7 @@ public final class CameraUtils {
 
     /**
      * 处理拍照的回调
+     *
      * @param data
      * @return
      */

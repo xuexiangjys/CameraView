@@ -42,7 +42,7 @@ public final class CameraManager {
         return openCamera(context, 3840 * 2160);
     }
 
-    public Camera openCamera(Context context, long mMaxPicturePixels) {
+    public Camera openCamera(Context context, long maxPicturePixels) {
         if (!CameraUtils.supportCameraHardware(context)) {
             return null;
         }
@@ -63,12 +63,14 @@ public final class CameraManager {
 
         //设置预览的尺寸
         List<Camera.Size> previewSizes = parameters.getSupportedPreviewSizes();
-        Camera.Size previewSize = CameraUtils.findBestSize(false, previewSizes, 1920 * 1080);
+        //若只是为了预览，则尺寸不要超过1920x1080，否则相机带宽吃紧，这也是Camera2 API的要求.
+        Camera.Size previewSize = CameraUtils.findBestSize( previewSizes, 1920 * 1080);
         parameters.setPreviewSize(previewSize.width, previewSize.height);
+
         //设置拍照图片的尺寸
         List<Camera.Size> pictureSizes = parameters.getSupportedPictureSizes();
-        Camera.Size pictureSize = CameraUtils.findBestSize(true, pictureSizes, mMaxPicturePixels);
-        parameters.setPreviewSize(pictureSize.width, pictureSize.height);
+        Camera.Size pictureSize = CameraUtils.findBestSize(pictureSizes, maxPicturePixels);
+        parameters.setPictureSize(pictureSize.width, pictureSize.height);
 
         //设置相机参数
         initFocusParams(parameters);
