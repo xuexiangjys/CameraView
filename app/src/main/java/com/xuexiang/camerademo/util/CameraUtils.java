@@ -46,11 +46,11 @@ public final class CameraUtils {
     public static Camera.Size findBestSize(List<Camera.Size> sizeList, long maxPicturePixels) {
         //满足16:9，但超过maxAcceptedPixels的过大Size
         List<Camera.Size> largeSizes = new ArrayList<>();
-        //按面积由大到小排序
+        //按面积由大到小排序(降序）
         Collections.sort(sizeList, new Comparator<Camera.Size>() {
             @Override
             public int compare(Camera.Size o1, Camera.Size o2) {
-                return -Integer.compare(o1.width * o1.height, o2.width * o2.height);
+                return o2.width * o2.height - o1.width * o1.height;
             }
         });
         for (Camera.Size size : sizeList) {

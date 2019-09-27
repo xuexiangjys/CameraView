@@ -26,6 +26,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
@@ -55,7 +56,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.xuexiang.camerademo.activity.CameraActivity.KEY_IMG_PATH;
+import static com.xuexiang.camerademo.activity.PictureConfirmActivity.REQUEST_CODE_PICTURE_CONFIRM;
 import static com.xuexiang.camerademo.util.CameraUtils.JPEG;
 
 
@@ -66,7 +67,6 @@ import static com.xuexiang.camerademo.util.CameraUtils.JPEG;
 public class CameraViewActivity extends AppCompatActivity implements
         ActivityCompat.OnRequestPermissionsResultCallback,
         AspectRatioFragment.Listener {
-
     private static final String TAG = "CameraViewActivity";
 
     private static final int REQUEST_CAMERA_PERMISSION = 1;
@@ -254,17 +254,29 @@ public class CameraViewActivity extends AppCompatActivity implements
             getBackgroundHandler().post(new Runnable() {
                 @Override
                 public void run() {
-                    String picPath = CameraUtils.handleOnPictureTaken(data, JPEG);
-                    if (!StringUtils.isEmpty(picPath)) {
-                        setResult(RESULT_OK, new Intent().putExtra(KEY_IMG_PATH, picPath));
-                        finish();
-                    } else {
-                        ToastUtils.toast("图片保存失败！");
-                    }
+                    handlePictureTaken(data);
                 }
             });
         }
     };
+
+    private void handlePictureTaken(byte[] data) {
+        String picPath = CameraUtils.handleOnPictureTaken(data, JPEG);
+        if (!StringUtils.isEmpty(picPath)) {
+            PictureConfirmActivity.open(this, picPath);
+        } else {
+            ToastUtils.toast("图片保存失败！");
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_PICTURE_CONFIRM) {
+            setResult(RESULT_OK, data);
+            finish();
+        }
+    }
 
     public static class ConfirmationDialogFragment extends DialogFragment {
         private static final String ARG_MESSAGE = "message";

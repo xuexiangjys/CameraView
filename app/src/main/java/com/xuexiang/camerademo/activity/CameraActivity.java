@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.xuexiang.camerademo.R;
-import com.xuexiang.camerademo.camera1.CameraManager;
 import com.xuexiang.camerademo.camera1.CameraPreview;
 import com.xuexiang.camerademo.util.CameraUtils;
 import com.xuexiang.xaop.annotation.SingleClick;
@@ -20,6 +19,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.xuexiang.camerademo.activity.PictureConfirmActivity.REQUEST_CODE_PICTURE_CONFIRM;
 import static com.xuexiang.camerademo.util.CameraUtils.JPEG;
 
 /**
@@ -35,8 +35,6 @@ public class CameraActivity extends AppCompatActivity {
 
     private CameraPreview mCameraPreview;
 
-    private boolean isFocus;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,13 +46,20 @@ public class CameraActivity extends AppCompatActivity {
     }
 
     private void initCamera() {
-        final Camera camera = CameraManager.get().openCamera(this);
-        if (camera != null && mCameraPreview == null) {
-            mCameraPreview = new CameraPreview(this, camera);
+        if (mCameraPreview == null) {
+            mCameraPreview = new CameraPreview(this);
             mFlContainer.addView(mCameraPreview);
         } else {
             ToastUtils.toast("相机打开失败！");
         }
+    }
+
+    @Override
+    protected void onResume() {
+        if (mCameraPreview != null) {
+            mCameraPreview.onResume();
+        }
+        super.onResume();
     }
 
     @SingleClick
@@ -62,11 +67,7 @@ public class CameraActivity extends AppCompatActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_camera_button:
-                if (isFocus) {
-                    mCameraPreview.takePicture(mPictureCallback);
-                } else {
-                    mCameraPreview.autoFocus(mAutoFocusCallback);
-                }
+                takePicture();
                 break;
             case R.id.fl_container:
                 if (mCameraPreview.isAutoFocusMode()) {
@@ -78,23 +79,24 @@ public class CameraActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * 自动对焦回调
-     */
-    private Camera.AutoFocusCallback mAutoFocusCallback = new Camera.AutoFocusCallback() {
-        @Override
-        public void onAutoFocus(boolean success, Camera camera) {
-            //对焦状态
-            isFocus = success;
-            if (success) {
-                try {
-                    camera.takePicture(null, null, mPictureCallback);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+
+    private void takePicture() {
+        if (!mCameraPreview.isCameraOpened()) {
+            throw new IllegalStateException(
+                    "Camera is not ready. Call start() before takePicture().");
         }
-    };
+        if (mCameraPreview.isAutoFocusMode()) {
+            mCameraPreview.cancelAutoFocus();
+            mCameraPreview.autoFocus(new Camera.AutoFocusCallback() {
+                @Override
+                public void onAutoFocus(boolean success, Camera camera) {
+                    mCameraPreview.takePicture(mPictureCallback);
+                }
+            });
+        } else {
+            mCameraPreview.takePicture(mPictureCallback);
+        }
+    }
 
     /**
      * 拍照回调
@@ -102,15 +104,26 @@ public class CameraActivity extends AppCompatActivity {
     private Camera.PictureCallback mPictureCallback = new Camera.PictureCallback() {
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
-            String picPath = CameraUtils.handleOnPictureTaken(data, JPEG);
-            if (!StringUtils.isEmpty(picPath)) {
-                setResult(RESULT_OK, new Intent().putExtra(KEY_IMG_PATH, picPath));
-                finish();
-            } else {
-                ToastUtils.toast("图片保存失败！");
-            }
+            handlePictureTaken(data);
         }
     };
 
+    private void handlePictureTaken(byte[] data) {
+        String picPath = CameraUtils.handleOnPictureTaken(data, JPEG);
+        if (!StringUtils.isEmpty(picPath)) {
+            PictureConfirmActivity.open(this, picPath);
+        } else {
+            ToastUtils.toast("图片保存失败！");
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_PICTURE_CONFIRM) {
+            setResult(RESULT_OK, data);
+            finish();
+        }
+    }
 
 }

@@ -18,9 +18,9 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     private Camera mCamera;
     private SurfaceHolder mHolder;
 
-    public CameraPreview(Context context, Camera camera) {
+    public CameraPreview(Context context) {
         super(context);
-        mCamera = camera;
+        mCamera = CameraManager.get().openCamera(context);
         mHolder = getHolder();
         mHolder.setKeepScreenOn(true);
         mHolder.addCallback(this);
@@ -68,6 +68,10 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         mCamera.release();
     }
 
+    public void onResume() {
+        mCamera = CameraManager.get().openCamera(getContext());
+    }
+
     public boolean startPreview() {
         if (mCamera != null) {
             mCamera.startPreview();
@@ -90,6 +94,12 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         return false;
     }
 
+    public void cancelAutoFocus() {
+        if (mCamera != null) {
+            mCamera.cancelAutoFocus();
+        }
+    }
+
     public boolean takePicture(Camera.PictureCallback callback) {
         if (mCamera != null) {
             mCamera.takePicture(null, null, callback);
@@ -109,5 +119,11 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         return getFocusMode().contains(Camera.Parameters.FOCUS_MODE_AUTO);
     }
 
+    public boolean isCameraOpened() {
+        return mCamera != null;
+    }
 
+    public Camera getCamera() {
+        return mCamera;
+    }
 }
