@@ -41,7 +41,8 @@ public class MainFragment extends XPageSimpleListFragment {
     protected List<String> initSimpleData(List<String> lists) {
         lists.add("Camera1 自定义照相机");
         lists.add("Camera2 自定义照相机");
-        lists.add("Google CameraView 自定义照相机");
+        lists.add("Google CameraView（Activity）");
+        lists.add("Google CameraView（Fragment）");
         return lists;
     }
 
@@ -53,7 +54,7 @@ public class MainFragment extends XPageSimpleListFragment {
     @Override
     @Permission({CAMERA, STORAGE})
     protected void onItemClick(int position) {
-        switch(position) {
+        switch (position) {
             case 0:
                 startActivityForResult(new Intent(getContext(), CameraActivity.class), REQUEST_CODE_CUSTOM_CAMERA);
                 break;
@@ -62,6 +63,9 @@ public class MainFragment extends XPageSimpleListFragment {
                 break;
             case 2:
                 startActivityForResult(new Intent(getContext(), CameraViewActivity.class), REQUEST_CODE_CUSTOM_CAMERA);
+                break;
+            case 3:
+                openPageForResult(CameraViewFragment.class, null, REQUEST_CODE_CUSTOM_CAMERA);
                 break;
             default:
                 break;

@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.xuexiang.xaop' //引用xaop插件
+apply plugin: 'com.xuexiang.xrouter' //引用xrouter-plugin插件实现自动注册
 
 android {
     compileSdkVersion build_versions.target_sdk
@@ -12,6 +13,12 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [ moduleName : project.getName() ]
+            }
+        }
     }
 
     if (isNeedPackage.toBoolean()) {
@@ -64,6 +71,9 @@ dependencies {
     //XPage
     implementation 'com.github.xuexiangjys.XPage:xpage-lib:2.2.7'
     annotationProcessor 'com.github.xuexiangjys.XPage:xpage-compiler:2.2.7'
+    //页面路由
+    implementation 'com.github.xuexiangjys.XRouter:xrouter-runtime:1.0.1'
+    annotationProcessor 'com.github.xuexiangjys.XRouter:xrouter-compiler:1.0.1'
     //ButterKnife的sdk
     implementation deps.butterknife.runtime
     annotationProcessor deps.butterknife.compiler

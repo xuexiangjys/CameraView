@@ -56,16 +56,38 @@ public class AspectRatioFragment extends DialogFragment {
         return fragment;
     }
 
+
+    public static AspectRatioFragment newInstance(Set<AspectRatio> ratios,
+                                                  AspectRatio currentRatio,
+                                                  Listener listener) {
+        final AspectRatioFragment fragment = new AspectRatioFragment();
+        final Bundle args = new Bundle();
+        args.putParcelableArray(ARG_ASPECT_RATIOS,
+                ratios.toArray(new AspectRatio[ratios.size()]));
+        args.putParcelable(ARG_CURRENT_ASPECT_RATIO, currentRatio);
+        fragment.setArguments(args);
+        fragment.setListener(listener);
+        return fragment;
+    }
+
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mListener = (Listener) context;
+        if (context instanceof Listener) {
+            mListener = (Listener) context;
+        }
     }
 
     @Override
     public void onDetach() {
         mListener = null;
         super.onDetach();
+    }
+
+    public AspectRatioFragment setListener(Listener listener) {
+        mListener = listener;
+        return this;
     }
 
     @NonNull

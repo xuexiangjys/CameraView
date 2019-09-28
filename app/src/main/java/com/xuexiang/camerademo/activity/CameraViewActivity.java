@@ -21,6 +21,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -209,11 +210,17 @@ public class CameraViewActivity extends AppCompatActivity implements
                 }
                 return true;
             case R.id.switch_camera:
-                if (mCameraView != null) {
-                    int facing = mCameraView.getFacing();
-                    mCameraView.setFacing(facing == CameraView.FACING_FRONT ? CameraView.FACING_BACK : CameraView.FACING_FRONT);
+                if (Camera.getNumberOfCameras() > 1) {
+                    if (mCameraView != null) {
+                        int facing = mCameraView.getFacing();
+                        mCameraView.setFacing(facing == CameraView.FACING_FRONT ? CameraView.FACING_BACK : CameraView.FACING_FRONT);
+                    }
+                } else {
+                    ToastUtils.toast("当前设备不支持切换摄像头！");
                 }
                 return true;
+            default:
+                break;
         }
         return super.onOptionsItemSelected(item);
     }

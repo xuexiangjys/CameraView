@@ -68,6 +68,8 @@ public class PictureConfirmActivity extends AppCompatActivity {
                 setResult(RESULT_OK, new Intent().putExtra(KEY_IMG_PATH, mImgPath));
                 finish();
                 break;
+            default:
+                break;
         }
     }
 
