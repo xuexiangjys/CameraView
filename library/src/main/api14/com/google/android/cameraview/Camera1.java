@@ -322,7 +322,8 @@ class Camera1 extends CameraViewImpl {
 
     void adjustCameraParameters() {
         SortedSet<Size> sizes = mPreviewSizes.sizes(mAspectRatio);
-        if (sizes == null) { // Not supported
+        // Not supported
+        if (sizes == null) {
             mAspectRatio = chooseAspectRatio();
             sizes = mPreviewSizes.sizes(mAspectRatio);
         }

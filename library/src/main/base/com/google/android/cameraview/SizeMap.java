@@ -68,7 +68,16 @@ class SizeMap {
     }
 
     SortedSet<Size> sizes(AspectRatio ratio) {
-        return mRatios.get(ratio);
+        SortedSet<Size> sizes = mRatios.get(ratio);
+        return sizes != null ? sizes : getAllSize();
+    }
+
+    public SortedSet<Size> getAllSize() {
+        SortedSet<Size> sizes = new TreeSet<>();
+        for (SortedSet<Size> value : mRatios.values()) {
+            sizes.addAll(value);
+        }
+        return sizes;
     }
 
     void clear() {
