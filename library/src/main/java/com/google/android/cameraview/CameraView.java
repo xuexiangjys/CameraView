@@ -95,6 +95,7 @@ public class CameraView extends FrameLayout {
     private final CallbackBridge mCallbacks;
 
     private boolean mAdjustViewBounds;
+    private String mAspectRatioString;
 
     private final DisplayOrientationDetector mDisplayOrientationDetector;
 
@@ -127,13 +128,8 @@ public class CameraView extends FrameLayout {
         // Attributes
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CameraView, defStyleAttr, R.style.Widget_CameraView);
         mAdjustViewBounds = a.getBoolean(R.styleable.CameraView_android_adjustViewBounds, false);
+        mAspectRatioString = a.getString(R.styleable.CameraView_cv_aspectRatio);
         setFacing(a.getInt(R.styleable.CameraView_cv_facing, FACING_BACK));
-        String aspectRatio = a.getString(R.styleable.CameraView_cv_aspectRatio);
-        if (aspectRatio != null) {
-            setAspectRatio(AspectRatio.parse(aspectRatio));
-        } else {
-            setAspectRatio(Constants.DEFAULT_ASPECT_RATIO);
-        }
         setAutoFocus(a.getBoolean(R.styleable.CameraView_cv_autoFocus, true));
         setFlash(a.getInt(R.styleable.CameraView_cv_flash, Constants.FLASH_AUTO));
         a.recycle();
@@ -219,19 +215,32 @@ public class CameraView extends FrameLayout {
         if (mDisplayOrientationDetector.getLastKnownDisplayOrientation() % 180 == 0) {
             ratio = ratio.inverse();
         }
-        assert ratio != null;
-        if (height < width * ratio.getY() / ratio.getX()) {
-            mImpl.getView().measure(
-                    MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
-                    MeasureSpec.makeMeasureSpec(width * ratio.getY() / ratio.getX(),
-                            MeasureSpec.EXACTLY));
-        } else {
-            mImpl.getView().measure(
-                    MeasureSpec.makeMeasureSpec(height * ratio.getX() / ratio.getY(),
-                            MeasureSpec.EXACTLY),
-                    MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
+        if (ratio != null) {
+            if (height < width * ratio.getY() / ratio.getX()) {
+                mImpl.getView().measure(
+                        MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
+                        MeasureSpec.makeMeasureSpec(width * ratio.getY() / ratio.getX(),
+                                MeasureSpec.EXACTLY));
+            } else {
+                mImpl.getView().measure(
+                        MeasureSpec.makeMeasureSpec(height * ratio.getX() / ratio.getY(),
+                                MeasureSpec.EXACTLY),
+                        MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
+            }
         }
     }
+
+    /**
+     * 在相机没打开的情况下，设置比例是无效的
+     */
+    private void updateAspectRatio() {
+        if (mAspectRatioString != null) {
+            setAspectRatio(AspectRatio.parse(mAspectRatioString));
+        } else {
+            setAspectRatio(_CameraView.getDefaultAspectRatio());
+        }
+    }
+
 
     @Override
     protected Parcelable onSaveInstanceState() {
@@ -445,6 +454,7 @@ public class CameraView extends FrameLayout {
 
         @Override
         public void onCameraOpened() {
+            updateAspectRatio();
             if (mRequestLayoutOnOpen) {
                 mRequestLayoutOnOpen = false;
                 requestLayout();
@@ -558,6 +568,7 @@ public class CameraView extends FrameLayout {
 
 
     //=====================对外API=================//
+
     /**
      * 设置相机的策略
      *
@@ -565,6 +576,10 @@ public class CameraView extends FrameLayout {
      */
     public static void setICameraStrategy(ICameraStrategy sICameraStrategy) {
         _CameraView.setICameraStrategy(sICameraStrategy);
+    }
+
+    public static void setDefaultAspectRatio(AspectRatio aspectRatio) {
+        _CameraView.setDefaultAspectRatio(aspectRatio);
     }
 
 }

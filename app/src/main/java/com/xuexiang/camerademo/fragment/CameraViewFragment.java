@@ -1,6 +1,5 @@
 package com.xuexiang.camerademo.fragment;
 
-import android.content.Intent;
 import android.hardware.Camera;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
@@ -27,9 +26,7 @@ import java.util.Set;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-import static android.app.Activity.RESULT_OK;
 import static android.content.ContentValues.TAG;
-import static com.xuexiang.camerademo.activity.PictureConfirmActivity.REQUEST_CODE_PICTURE_CONFIRM;
 import static com.xuexiang.camerademo.util.CameraUtils.JPEG;
 
 /**

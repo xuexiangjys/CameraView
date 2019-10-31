@@ -188,7 +188,7 @@ class Camera2 extends CameraViewImpl {
 
     private int mFacing;
 
-    private AspectRatio mAspectRatio = Constants.DEFAULT_ASPECT_RATIO;
+    private AspectRatio mAspectRatio = _CameraView.getDefaultAspectRatio();
 
     private boolean mAutoFocus;
 
@@ -449,8 +449,7 @@ class Camera2 extends CameraViewImpl {
         }
 
         Size pictureSize = mICameraStrategy.chooseOptimalPictureSize(mPictureSizes.sizes(mAspectRatio));
-        mImageReader = ImageReader.newInstance(pictureSize.getWidth(), pictureSize.getHeight(),
-                ImageFormat.JPEG, /* maxImages */ 2);
+        mImageReader = ImageReader.newInstance(pictureSize.getWidth(), pictureSize.getHeight(), ImageFormat.JPEG, 2);
         mImageReader.setOnImageAvailableListener(mOnImageAvailableListener, null);
     }
 

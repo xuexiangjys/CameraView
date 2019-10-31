@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.cameraview.CameraView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/camera"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:adjustViewBounds="true"
-    android:background="@android:color/black">
+    android:background="@android:color/black"
+    app:cv_aspectRatio="16:9">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"

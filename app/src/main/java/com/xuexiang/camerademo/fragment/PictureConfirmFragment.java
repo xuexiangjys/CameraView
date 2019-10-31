@@ -1,13 +1,10 @@
 package com.xuexiang.camerademo.fragment;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.support.v7.widget.AppCompatImageView;
 import android.view.KeyEvent;
 import android.view.View;
 
 import com.xuexiang.camerademo.R;
-import com.xuexiang.camerademo.activity.PictureConfirmActivity;
 import com.xuexiang.xaop.annotation.SingleClick;
 import com.xuexiang.xpage.annotation.Page;
 import com.xuexiang.xpage.base.XPageFragment;
@@ -16,7 +13,6 @@ import com.xuexiang.xpage.utils.TitleBar;
 import com.xuexiang.xrouter.annotation.AutoWired;
 import com.xuexiang.xrouter.launcher.XRouter;
 import com.xuexiang.xutil.app.PathUtils;
-import com.xuexiang.xutil.common.ClickUtils;
 import com.xuexiang.xutil.common.StringUtils;
 import com.xuexiang.xutil.file.FileUtils;
 import com.xuexiang.xutil.tip.ToastUtils;
@@ -24,10 +20,7 @@ import com.xuexiang.xutil.tip.ToastUtils;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-import static android.app.Activity.RESULT_OK;
-import static com.xuexiang.camerademo.activity.CameraActivity.KEY_IMG_PATH;
 import static com.xuexiang.camerademo.activity.PictureConfirmActivity.KEY_PICTURE_PATH;
-import static com.xuexiang.camerademo.activity.PictureConfirmActivity.REQUEST_CODE_PICTURE_CONFIRM;
 
 /**
  * @author xuexiang

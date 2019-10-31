@@ -14,6 +14,8 @@ class _CameraView {
      */
     private static ICameraStrategy sICameraStrategy = new DefaultCameraStrategy();
 
+    private static AspectRatio sDefaultAspectRatio = AspectRatio.of(16, 9);
+
     public static void setICameraStrategy(ICameraStrategy sICameraStrategy) {
         _CameraView.sICameraStrategy = sICameraStrategy;
     }
@@ -22,4 +24,11 @@ class _CameraView {
         return sICameraStrategy;
     }
 
+    public static void setDefaultAspectRatio(AspectRatio aspectRatio) {
+        _CameraView.sDefaultAspectRatio = aspectRatio;
+    }
+
+    public static AspectRatio getDefaultAspectRatio() {
+        return sDefaultAspectRatio;
+    }
 }
