@@ -21,6 +21,7 @@ import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.os.Build;
 import android.support.v4.util.SparseArrayCompat;
+import android.util.Log;
 import android.view.SurfaceHolder;
 
 import java.io.IOException;
@@ -32,6 +33,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 @SuppressWarnings("deprecation")
 class Camera1 extends CameraViewImpl {
+
+    private static final String TAG = "Camera1";
 
     private static final int INVALID_CAMERA_ID = -1;
 
@@ -121,8 +124,8 @@ class Camera1 extends CameraViewImpl {
             } else {
                 mCamera.setPreviewTexture((SurfaceTexture) mPreview.getSurfaceTexture());
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -220,8 +223,8 @@ class Camera1 extends CameraViewImpl {
     @Override
     void takePicture() {
         if (!isCameraOpened()) {
-            throw new IllegalStateException(
-                    "Camera is not ready. Call start() before takePicture().");
+            Log.e(TAG, "Camera is not ready. Call start() before takePicture().");
+            return;
         }
         if (getAutoFocus()) {
             mCamera.cancelAutoFocus();
@@ -363,7 +366,8 @@ class Camera1 extends CameraViewImpl {
             desiredHeight = surfaceHeight;
         }
         Size result = null;
-        for (Size size : sizes) { // Iterate from small to large
+        // Iterate from small to large
+        for (Size size : sizes) {
             if (desiredWidth <= size.getWidth() && desiredHeight <= size.getHeight()) {
                 return size;
 
